@@ -2,23 +2,23 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys, tweepy, unirest, json, random, time
+import sys, tweepy, unirest
 
 def main():
 
     # Get twitter authentication keys
     try:
-        from secrets import secret_key, consumer_key, access_token, secret_token, recipe_id, recipe_key
+        from secrets import secret_key, consumer_key, access_token, secret_token, api_key
     except ImportError as e:
         import logging
         logging.error(e)
         sys.exit(1)
 
     try:
-        recipe = get_recipe(recipe_id, recipe_key)
-    except NotImplementedError as e:
+        recipe = get_recipe(api_key)
+    except:
         import logging
-        logging.error(e)
+        logging.error('there was an error while fetching a recipe')
         sys.exit(1)
 
     try:
@@ -27,7 +27,6 @@ def main():
     except tweepy.TweepError as e:
         import logging
         logging.error(e)
-
         sys.exit(1)
 
 # authenticate with twitter so we're able to tweet
@@ -37,15 +36,20 @@ def twitter_login(consumer_key, secret_key, access_token, secret_token):
 
     return tweepy.API(auth)
 
-def get_recipe(recipe_id, recipe_key):
-    response = unirest.get("https://api.edamam.com/search?q=&app_id=" + recipe_id + "&app_key=" + recipe_key + "&health=vegetarian")
-    bod = json.dumps(response.body)
-    bod = json.loads(bod)
+def get_recipe(api_key):
+    response = unirest.get(
+        "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/random?limitLicense=false&number=1&tags=vegetarian",
+        headers={
+            "X-Mashape-Key": api_key,
+            "Accept": "application/json"
+       })
 
-    recipe_url = bod[unicode("hits")][0][unicode("recipe")][unicode("url")]
-    recipe_label = bod[unicode("hits")][0][unicode("recipe")][unicode("label")]
-    return {"url":recipe_url, "name":recipe_label}
+    recipe = {}
+    recipe["url"] = response.body["recipes"][0]["sourceUrl"]
+    recipe["name"] = response.body["recipes"][0]["title"]
+
+    return recipe
 
 if __name__ == '__main__':
-    while True:
-        main()
+    main()
+
