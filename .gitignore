@@ -1,0 +1,6 @@
+.idea/
+venv/
+*.pyc
+*/secrets.py
+tests/
+*.iml
