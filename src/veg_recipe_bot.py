@@ -1,10 +1,10 @@
-
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import sys, tweepy, unirest, os
 
-def main():
+
+def tweet():
 
     # Get authentication keys
     try:
@@ -13,7 +13,7 @@ def main():
         access_token = os.environ['TWITTER_ACCESS_TOKEN']
         secret_token = os.environ['TWITTER_SECRET_TOKEN']
         api_key = os.environ['RECIPE_API_KEY']
-    except KeyError as e:
+    except KeyError:
         pass
     else:
         try:
@@ -40,12 +40,14 @@ def main():
         logging.error(e)
         sys.exit(1)
 
+
 # authenticate with twitter so we're able to tweet
 def twitter_login(consumer_key, secret_key, access_token, secret_token):
     auth = tweepy.OAuthHandler(consumer_key, secret_key)
     auth.set_access_token(access_token, secret_token)
 
     return tweepy.API(auth)
+
 
 def get_recipe(api_key):
     response = unirest.get(
@@ -61,6 +63,7 @@ def get_recipe(api_key):
 
     return recipe
 
+
 if __name__ == '__main__':
-    main()
+    tweet()
 
