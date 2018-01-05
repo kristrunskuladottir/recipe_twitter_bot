@@ -2,18 +2,28 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys, tweepy, unirest
+import sys, tweepy, unirest, os
 
 def main():
 
-    # Get twitter authentication keys
+    # Get authentication keys
     try:
-        from secrets import secret_key, consumer_key, access_token, secret_token, api_key
-    except ImportError as e:
-        import logging
-        logging.error(e)
-        sys.exit(1)
+        secret_key = os.environ['TWITTER_SECRET_KEY']
+        consumer_key = os.environ['TWITTER_CONSUMER_KEY']
+        access_token = os.environ['TWITTER_ACCESS_TOKEN']
+        secret_token = os.environ['TWITTER_SECRET_TOKEN']
+        api_key = os.environ['RECIPE_API_KEY']
+    except KeyError as e:
+        pass
+    else:
+        try:
+            from secrets import secret_key, consumer_key, access_token, secret_token, api_key
+        except ImportError as e:
+            import logging
+            logging.error(e)
+            sys.exit(1)
 
+    # try getting a random recipe
     try:
         recipe = get_recipe(api_key)
     except:
@@ -21,6 +31,7 @@ def main():
         logging.error('there was an error while fetching a recipe')
         sys.exit(1)
 
+    # lets try tweeting the recipe
     try:
         api = twitter_login(consumer_key, secret_key, access_token, secret_token)
         api.update_status(recipe["name"] + ' ' + recipe["url"])
