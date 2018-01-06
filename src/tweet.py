@@ -4,7 +4,7 @@ from veg_recipe_bot import tweet
 sched = BlockingScheduler()
 
 
-@sched.scheduled_job('cron', hour=12)
+@sched.scheduled_job('interval', minutes=1)
 def scheduled_job():
     tweet()
 
