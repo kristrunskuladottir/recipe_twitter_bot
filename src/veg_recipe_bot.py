@@ -14,6 +14,7 @@ def tweet():
         api_key = os.environ['RECIPE_API_KEY']
     except KeyError:
         try:
+            # if keys were not stored in enviroment variables we try to get them from file
             from secrets import secret_key, consumer_key, access_token, secret_token, api_key
         except ImportError as e:
             import logging
