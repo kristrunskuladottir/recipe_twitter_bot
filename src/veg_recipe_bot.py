@@ -5,7 +5,6 @@ import sys, tweepy, unirest, os
 
 
 def tweet():
-
     # Get authentication keys
     try:
         secret_key = os.environ['TWITTER_SECRET_KEY']
@@ -14,8 +13,6 @@ def tweet():
         secret_token = os.environ['TWITTER_SECRET_TOKEN']
         api_key = os.environ['RECIPE_API_KEY']
     except KeyError:
-        pass
-    else:
         try:
             from secrets import secret_key, consumer_key, access_token, secret_token, api_key
         except ImportError as e:
